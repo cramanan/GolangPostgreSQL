@@ -20,3 +20,40 @@ func HandleFunc(fn HandlerFuncE) http.HandlerFunc {
 		}
 	}
 }
+
+func (server *API) CreateUser(writer http.ResponseWriter, request *http.Request) (err error) {
+	user := new(User)
+	err = json.NewDecoder(request.Body).Decode(user)
+	if err != nil {
+		return err
+	}
+	return server.storage.CreateUser(*user)
+}
+
+func (server *API) ReadUsers(writer http.ResponseWriter, request *http.Request) (err error) {
+	user := new(User)
+	err = json.NewDecoder(request.Body).Decode(user)
+	if err != nil {
+		return err
+	}
+	return server.storage.ReadUsers(*user)
+
+}
+
+// func (server *API) UpdateUser(writer http.ResponseWriter, request *http.Request) (err error) {
+// 	user := new(User)
+// 	err = json.NewDecoder(request.Body).Decode(user)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return server.storage.UpdateUser(*user)
+// }
+
+func (server *API) DeleteUser(writer http.ResponseWriter, request *http.Request) (err error) {
+	user := new(User)
+	err = json.NewDecoder(request.Body).Decode(user)
+	if err != nil {
+		return err
+	}
+	return server.storage.DeleteUser(*user)
+}

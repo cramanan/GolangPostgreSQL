@@ -6,6 +6,9 @@ import (
 )
 
 func main() {
-	server := api.New(":8080")
+	server, err := api.New(":8080")
+	if err != nil {
+		log.Fatalln(err)
+	}
 	log.Fatalln(server.ListenAndServe())
 }
