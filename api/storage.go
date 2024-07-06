@@ -19,7 +19,7 @@ func init() {
 
 type Storage interface {
 	CreateUser(User) error
-	ReadUsers(User) error
+	ReadUsers() ([]User, error)
 	UpdateUser(User, User) error
 	DeleteUser(User) error
 }
@@ -27,7 +27,6 @@ type Storage interface {
 type PostgreSQLStore struct{ *sql.DB }
 
 func (store *PostgreSQLStore) Init() (err error) {
-
 	_, err = store.DB.Exec(
 		`CREATE TABLE IF NOT EXISTS users (
 		id VARCHAR(36)
@@ -65,8 +64,21 @@ func (store *PostgreSQLStore) CreateUser(User) (err error) {
 	return
 }
 
-func (store *PostgreSQLStore) ReadUsers(user User) (err error) {
-	return nil
+func (store *PostgreSQLStore) ReadUsers() (users []User, err error) {
+	rows, err := store.DB.Query("SELECT * FROM users;")
+	if err != nil {
+		return nil, err
+	}
+	users = []User{}
+	for rows.Next() {
+		user := User{}
+		err = rows.Scan(&user.Id)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, err
 }
 
 func (store *PostgreSQLStore) UpdateUser(user User, update User) (err error) {

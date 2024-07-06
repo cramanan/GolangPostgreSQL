@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -16,6 +17,7 @@ func WriteJSON(writer http.ResponseWriter, statusCode int, v any) error {
 func HandleFunc(fn HandlerFuncE) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		if err := fn(writer, request); err != nil {
+			log.Println(err)
 			WriteJSON(writer, http.StatusInternalServerError, err.Error())
 		}
 	}
@@ -31,13 +33,12 @@ func (server *API) CreateUser(writer http.ResponseWriter, request *http.Request)
 }
 
 func (server *API) ReadUsers(writer http.ResponseWriter, request *http.Request) (err error) {
-	user := new(User)
-	err = json.NewDecoder(request.Body).Decode(user)
+	users, err := server.storage.ReadUsers()
 	if err != nil {
 		return err
 	}
-	return server.storage.ReadUsers(*user)
 
+	return WriteJSON(writer, http.StatusOK, users)
 }
 
 // func (server *API) UpdateUser(writer http.ResponseWriter, request *http.Request) (err error) {
