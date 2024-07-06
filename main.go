@@ -1,7 +1,11 @@
 package main
 
-import "PostgreSQL/api"
+import (
+	"PostgreSQL/api"
+	"log"
+)
 
 func main() {
-	api.New(":8080")
+	server := api.New(":8080")
+	log.Fatalln(server.ListenAndServe())
 }
