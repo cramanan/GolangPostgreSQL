@@ -16,5 +16,13 @@ func New(addr string) (server *API, err error) {
 	if err != nil {
 		return nil, err
 	}
+
+	router := http.NewServeMux()
+	router.HandleFunc("/create", HandleFunc(server.CreateUser))
+	router.HandleFunc("/read", HandleFunc(server.ReadUsers))
+	// router.HandleFunc("/create", HandleFunc(server.UpdateUser))
+	router.HandleFunc("/delete", HandleFunc(server.DeleteUser))
+	server.Handler = router
+
 	return server, nil
 }

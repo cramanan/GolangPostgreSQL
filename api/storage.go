@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/gofrs/uuid"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
@@ -25,10 +26,10 @@ type Storage interface {
 
 type PostgreSQLStore struct{ *sql.DB }
 
-func (store PostgreSQLStore) Init() (err error) {
+func (store *PostgreSQLStore) Init() (err error) {
 
 	_, err = store.DB.Exec(
-		`CREATE TABLE users IF NOT EXISTS (
+		`CREATE TABLE IF NOT EXISTS users (
 		id VARCHAR(36)
 	);`)
 	return err
@@ -47,10 +48,20 @@ func NewPostgreSQLStore() (store *PostgreSQLStore, err error) {
 		return nil, err
 	}
 
+	err = store.Init()
+	if err != nil {
+		return nil, err
+	}
+
 	return store, err
 }
 
-func (store *PostgreSQLStore) CreateUser(user User) (err error) {
+func (store *PostgreSQLStore) CreateUser(User) (err error) {
+	raw, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+	store.DB.Exec("INSERT INTO users (id) VALUES ($1)", raw.String())
 	return
 }
 
