@@ -38,9 +38,10 @@ func NewPostgreSQLStore() (store *PostgreSQLStore, err error) {
 	store = new(PostgreSQLStore)
 	store.DB, err = sql.Open("postgres",
 		fmt.Sprintf(
-			"user=%s password=%s sslmode=disable",
+			"user=%s password=%s sslmode=disable dbname=%s",
 			os.Getenv("POSTGRES_USER"),
 			os.Getenv("POSTGRES_PASSWORD"),
+			os.Getenv("POSTGRES_DB"),
 		),
 	)
 	if err != nil {

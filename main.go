@@ -10,6 +10,6 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
+	log.Println("Starting server")
 	log.Fatalln(server.ListenAndServe())
 }
